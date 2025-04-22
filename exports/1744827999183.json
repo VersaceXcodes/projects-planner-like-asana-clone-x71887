@@ -1,0 +1,15 @@
+{
+  "timestamp": 1744827999183,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/package.json",
+      "type": "text",
+      "size": 2939,
+      "dependencies": true
+    }
+  ]
+}

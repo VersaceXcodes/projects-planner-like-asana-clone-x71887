@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828530998,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_SearchDropdown",
+      "version": "1744827328683"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_SearchDropdown.tsx",
+      "type": "text",
+      "size": 5947,
+      "dependencies": false
+    }
+  ]
+}

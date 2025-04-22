@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827781167,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Inbox",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_Inbox.tsx",
+      "type": "text",
+      "size": 7046,
+      "dependencies": false
+    }
+  ]
+}

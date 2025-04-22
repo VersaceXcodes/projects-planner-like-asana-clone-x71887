@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828737705,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_Modal_QuickAddTask",
+      "version": "1744827328754"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_Modal_QuickAddTask.tsx",
+      "type": "text",
+      "size": 11510,
+      "dependencies": false
+    }
+  ]
+}

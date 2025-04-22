@@ -1,0 +1,15 @@
+{
+  "timestamp": 1744825878164,
+  "operation": {
+    "id": "backend:specifications:asyncapi"
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/backend/asyncapi.yaml",
+      "type": "text",
+      "size": 15915,
+      "dependencies": false
+    }
+  ]
+}

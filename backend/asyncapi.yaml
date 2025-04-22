@@ -1,0 +1,618 @@
+asyncapi: 2.0.0
+info:
+  title: ProjectPlanner Realtime API
+  version: 1.0.0
+  description: AsyncAPI specification for ProjectPlanner realtime events
+servers:
+  development:
+    url: localhost:1337
+    protocol: ws
+    description: Development WebSocket server (JWT auth via bearer token)
+    security:
+      - jwt: []
+channels:
+  workspace/{workspace_id}/projects:
+    description: Real-time project events in a workspace
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+    subscribe:
+      operationId: on_project_event
+      summary: Receive project lifecycle events
+      message:
+        oneOf:
+          - $ref: "#/components/messages/project_created"
+          - $ref: "#/components/messages/project_updated"
+          - $ref: "#/components/messages/project_archived"
+          - $ref: "#/components/messages/project_deleted"
+  workspace/{workspace_id}/projects/{project_id}/sections:
+    description: Real-time section events in a project
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+      project_id:
+        $ref: "#/components/parameters/project_id"
+    subscribe:
+      operationId: on_section_event
+      summary: Receive section lifecycle events
+      message:
+        oneOf:
+          - $ref: "#/components/messages/section_created"
+          - $ref: "#/components/messages/section_updated"
+          - $ref: "#/components/messages/section_deleted"
+          - $ref: "#/components/messages/section_reordered"
+  workspace/{workspace_id}/projects/{project_id}/tasks:
+    description: Real-time task events in a project
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+      project_id:
+        $ref: "#/components/parameters/project_id"
+    subscribe:
+      operationId: on_task_event
+      summary: Receive task lifecycle events
+      message:
+        oneOf:
+          - $ref: "#/components/messages/task_created"
+          - $ref: "#/components/messages/task_updated"
+          - $ref: "#/components/messages/task_deleted"
+          - $ref: "#/components/messages/task_moved"
+          - $ref: "#/components/messages/task_order_changed"
+  workspace/{workspace_id}/projects/{project_id}/tasks/{task_id}/comments:
+    description: Real-time comment events for a task
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+      project_id:
+        $ref: "#/components/parameters/project_id"
+      task_id:
+        $ref: "#/components/parameters/task_id"
+    subscribe:
+      operationId: on_comment_created
+      summary: Receive new comments
+      message:
+        $ref: "#/components/messages/comment_created"
+  workspace/{workspace_id}/projects/{project_id}/tasks/{task_id}/attachments:
+    description: Real-time attachment events for a task
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+      project_id:
+        $ref: "#/components/parameters/project_id"
+      task_id:
+        $ref: "#/components/parameters/task_id"
+    subscribe:
+      operationId: on_attachment_added
+      summary: Receive new attachments
+      message:
+        $ref: "#/components/messages/attachment_added"
+  workspace/{workspace_id}/projects/{project_id}/tasks/{task_id}/assignments:
+    description: Real-time assignment events for a task
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+      project_id:
+        $ref: "#/components/parameters/project_id"
+      task_id:
+        $ref: "#/components/parameters/task_id"
+    subscribe:
+      operationId: on_assignment_event
+      summary: Receive assignment updates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/assignment_added"
+          - $ref: "#/components/messages/assignment_removed"
+  user/{user_id}/notifications:
+    description: Real-time in-app notifications for a user
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: on_notification_event
+      summary: Receive notification updates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/notification_created"
+          - $ref: "#/components/messages/notification_updated"
+  workspace/{workspace_id}/members:
+    description: Real-time workspace member events
+    parameters:
+      workspace_id:
+        $ref: "#/components/parameters/workspace_id"
+    subscribe:
+      operationId: on_workspace_member_event
+      summary: Receive workspace membership updates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/workspace_member_added"
+          - $ref: "#/components/messages/workspace_member_removed"
+components:
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    workspace_id:
+      description: Identifier for the workspace
+      schema:
+        type: string
+    project_id:
+      description: Identifier for the project
+      schema:
+        type: string
+    task_id:
+      description: Identifier for the task
+      schema:
+        type: string
+    user_id:
+      description: Identifier for the user
+      schema:
+        type: string
+  messages:
+    project_created:
+      name: project_created
+      title: Project Created
+      summary: A project was created in the workspace
+      payload:
+        type: object
+        properties:
+          project:
+            $ref: "#/components/schemas/project"
+        required:
+          - project
+    project_updated:
+      name: project_updated
+      title: Project Updated
+      summary: A project was updated in the workspace
+      payload:
+        type: object
+        properties:
+          project:
+            $ref: "#/components/schemas/project"
+        required:
+          - project
+    project_archived:
+      name: project_archived
+      title: Project Archived
+      summary: A project was archived in the workspace
+      payload:
+        type: object
+        properties:
+          project:
+            $ref: "#/components/schemas/project"
+        required:
+          - project
+    project_deleted:
+      name: project_deleted
+      title: Project Deleted
+      summary: A project was deleted from the workspace
+      payload:
+        type: object
+        properties:
+          project_id:
+            type: string
+        required:
+          - project_id
+    section_created:
+      name: section_created
+      title: Section Created
+      summary: A section was created in the project
+      payload:
+        type: object
+        properties:
+          section:
+            $ref: "#/components/schemas/section"
+        required:
+          - section
+    section_updated:
+      name: section_updated
+      title: Section Updated
+      summary: A section was updated in the project
+      payload:
+        type: object
+        properties:
+          section:
+            $ref: "#/components/schemas/section"
+        required:
+          - section
+    section_deleted:
+      name: section_deleted
+      title: Section Deleted
+      summary: A section was deleted from the project
+      payload:
+        type: object
+        properties:
+          section_id:
+            type: string
+        required:
+          - section_id
+    section_reordered:
+      name: section_reordered
+      title: Section Reordered
+      summary: Sections order was changed in the project
+      payload:
+        type: object
+        properties:
+          sections:
+            type: array
+            items:
+              $ref: "#/components/schemas/section_order_item"
+        required:
+          - sections
+    task_created:
+      name: task_created
+      title: Task Created
+      summary: A task was created in the project
+      payload:
+        type: object
+        properties:
+          task:
+            $ref: "#/components/schemas/task"
+        required:
+          - task
+    task_updated:
+      name: task_updated
+      title: Task Updated
+      summary: A task was updated in the project
+      payload:
+        type: object
+        properties:
+          task:
+            $ref: "#/components/schemas/task"
+        required:
+          - task
+    task_deleted:
+      name: task_deleted
+      title: Task Deleted
+      summary: A task was deleted from the project
+      payload:
+        type: object
+        properties:
+          task_id:
+            type: string
+        required:
+          - task_id
+    task_moved:
+      name: task_moved
+      title: Task Moved
+      summary: A task was moved to a different section
+      payload:
+        type: object
+        properties:
+          task:
+            $ref: "#/components/schemas/task"
+        required:
+          - task
+    task_order_changed:
+      name: task_order_changed
+      title: Task Order Changed
+      summary: Tasks order was changed within a section
+      payload:
+        type: object
+        properties:
+          task:
+            $ref: "#/components/schemas/task"
+        required:
+          - task
+    comment_created:
+      name: comment_created
+      title: Comment Created
+      summary: A comment was added to a task
+      payload:
+        type: object
+        properties:
+          task_id:
+            type: string
+          comment:
+            $ref: "#/components/schemas/comment"
+        required:
+          - task_id
+          - comment
+    attachment_added:
+      name: attachment_added
+      title: Attachment Added
+      summary: An attachment was added to a task
+      payload:
+        type: object
+        properties:
+          task_id:
+            type: string
+          attachment:
+            $ref: "#/components/schemas/attachment"
+        required:
+          - task_id
+          - attachment
+    assignment_added:
+      name: assignment_added
+      title: Assignment Added
+      summary: A user was assigned to a task
+      payload:
+        type: object
+        properties:
+          task_id:
+            type: string
+          user_id:
+            type: string
+          assigned_by:
+            type: string
+          assigned_at:
+            type: string
+        required:
+          - task_id
+          - user_id
+          - assigned_by
+          - assigned_at
+    assignment_removed:
+      name: assignment_removed
+      title: Assignment Removed
+      summary: A user was unassigned from a task
+      payload:
+        type: object
+        properties:
+          task_id:
+            type: string
+          user_id:
+            type: string
+          removed_by:
+            type: string
+          removed_at:
+            type: string
+        required:
+          - task_id
+          - user_id
+          - removed_by
+          - removed_at
+    notification_created:
+      name: notification_created
+      title: Notification Created
+      summary: A new in-app notification was created
+      payload:
+        $ref: "#/components/schemas/notification"
+    notification_updated:
+      name: notification_updated
+      title: Notification Updated
+      summary: A notification was marked read/unread or all read
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+          is_read:
+            type: boolean
+          all_read:
+            type: boolean
+    workspace_member_added:
+      name: workspace_member_added
+      title: Workspace Member Added
+      summary: A member was added to the workspace
+      payload:
+        type: object
+        properties:
+          user:
+            $ref: "#/components/schemas/workspace_member"
+        required:
+          - user
+    workspace_member_removed:
+      name: workspace_member_removed
+      title: Workspace Member Removed
+      summary: A member was removed from the workspace
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+        required:
+          - user_id
+  schemas:
+    project:
+      type: object
+      properties:
+        id:
+          type: string
+        workspace_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        color:
+          type: string
+        is_archived:
+          type: boolean
+        archived_at:
+          type: string
+          nullable: true
+        created_by:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - workspace_id
+        - name
+        - color
+        - is_archived
+        - created_by
+        - created_at
+        - updated_at
+    section:
+      type: object
+      properties:
+        id:
+          type: string
+        project_id:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - project_id
+        - name
+        - order
+        - created_at
+        - updated_at
+    section_order_item:
+      type: object
+      properties:
+        id:
+          type: string
+        order:
+          type: integer
+      required:
+        - id
+        - order
+    task:
+      type: object
+      properties:
+        id:
+          type: string
+        project_id:
+          type: string
+        section_id:
+          type: string
+          nullable: true
+        parent_task_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - in_progress
+            - completed
+        priority:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+        due_date:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        assignees:
+          type: array
+          items:
+            type: string
+        created_by:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - project_id
+        - title
+        - status
+        - priority
+        - order
+        - assignees
+        - created_by
+        - created_at
+        - updated_at
+    comment:
+      type: object
+      properties:
+        id:
+          type: string
+        task_id:
+          type: string
+        author_id:
+          type: string
+        author_name:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+      required:
+        - id
+        - task_id
+        - author_id
+        - author_name
+        - content
+        - created_at
+    attachment:
+      type: object
+      properties:
+        id:
+          type: string
+        file_name:
+          type: string
+        file_url:
+          type: string
+        file_size:
+          type: integer
+        uploaded_by:
+          type: string
+        uploaded_at:
+          type: string
+      required:
+        - id
+        - file_name
+        - file_url
+        - file_size
+        - uploaded_by
+        - uploaded_at
+    notification:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - assignment
+            - comment
+            - subtask_assignment
+        task_id:
+          type: string
+        comment_id:
+          type: string
+          nullable: true
+        triggered_by:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+      required:
+        - id
+        - type
+        - task_id
+        - triggered_by
+        - is_read
+        - created_at
+    workspace_member:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        joined_at:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - role
+        - joined_at

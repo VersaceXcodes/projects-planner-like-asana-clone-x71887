@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827630382,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_EmailVerificationPrompt",
+      "version": "1744827328185"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_EmailVerificationPrompt.tsx",
+      "type": "text",
+      "size": 4376,
+      "dependencies": false
+    }
+  ]
+}

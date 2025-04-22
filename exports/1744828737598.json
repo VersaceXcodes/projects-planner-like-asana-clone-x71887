@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828737598,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_Modal_InviteMembers",
+      "version": "1744827328807"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_Modal_InviteMembers.tsx",
+      "type": "text",
+      "size": 7825,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828308201,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_NotificationSettings",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_NotificationSettings.tsx",
+      "type": "text",
+      "size": 4182,
+      "dependencies": false
+    }
+  ]
+}

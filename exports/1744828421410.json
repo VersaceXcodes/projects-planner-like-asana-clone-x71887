@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828421410,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_UserMenu",
+      "version": "1744827328649"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_UserMenu.tsx",
+      "type": "text",
+      "size": 4468,
+      "dependencies": false
+    }
+  ]
+}

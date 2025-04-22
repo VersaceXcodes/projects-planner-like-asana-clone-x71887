@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827983783,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_ProjectDetailBoard",
+      "version": "1744827328465"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_ProjectDetailBoard.tsx",
+      "type": "text",
+      "size": 13622,
+      "dependencies": false
+    }
+  ]
+}

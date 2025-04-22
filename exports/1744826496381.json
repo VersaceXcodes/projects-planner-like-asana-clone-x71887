@@ -1,0 +1,21 @@
+{
+  "timestamp": 1744826496381,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/backend/package.json",
+      "type": "text",
+      "size": 831,
+      "dependencies": true
+    },
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/backend/.env",
+      "type": "text",
+      "size": 523,
+      "dependencies": false
+    }
+  ]
+}

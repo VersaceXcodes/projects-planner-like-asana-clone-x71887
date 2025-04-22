@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827569281,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_ResetPassword",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_ResetPassword.tsx",
+      "type": "text",
+      "size": 6377,
+      "dependencies": false
+    }
+  ]
+}

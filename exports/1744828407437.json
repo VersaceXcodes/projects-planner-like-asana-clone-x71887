@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828407437,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_TopBar",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_TopBar.tsx",
+      "type": "text",
+      "size": 3519,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744828549822,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_QuickAddMenu",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/GV_QuickAddMenu.tsx",
+      "type": "text",
+      "size": 3489,
+      "dependencies": false
+    }
+  ]
+}

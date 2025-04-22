@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827232712,
+  "operation": {
+    "id": "webapp:react:store",
+    "refs": {
+      "id": "redux",
+      "version": "1744827111646"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/store/main.tsx",
+      "type": "text",
+      "size": 9842,
+      "dependencies": false
+    }
+  ]
+}

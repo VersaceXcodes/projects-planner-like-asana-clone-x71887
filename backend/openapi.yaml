@@ -1,0 +1,1802 @@
+openapi: 3.0.0
+info:
+  title: ProjectPlanner API
+  version: 1.0.0
+servers:
+  - url: http://localhost:1337
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    workspace_id:
+      name: workspace_id
+      in: path
+      required: true
+      schema:
+        type: string
+    project_id:
+      name: project_id
+      in: path
+      required: true
+      schema:
+        type: string
+    section_id:
+      name: section_id
+      in: path
+      required: true
+      schema:
+        type: string
+    task_id:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+    invite_id:
+      name: invite_id
+      in: path
+      required: true
+      schema:
+        type: string
+    user_id:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+    notification_id:
+      name: notification_id
+      in: path
+      required: true
+      schema:
+        type: string
+    attachment_id:
+      name: attachment_id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    error_response:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message
+    sign_up_request:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+      required:
+        - name
+        - email
+        - password
+    sign_up_response:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/user"
+        verification_expires_at:
+          type: string
+          format: date-time
+      required:
+        - user
+        - verification_expires_at
+    log_in_request:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+    log_in_response:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/user"
+      required:
+        - token
+        - user
+    forgot_password_request:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+        - email
+    forgot_password_response:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    reset_password_request:
+      type: object
+      properties:
+        token:
+          type: string
+        new_password:
+          type: string
+          minLength: 8
+      required:
+        - token
+        - new_password
+    reset_password_response:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    verify_email_request:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    verify_email_response:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    invite_accept_request:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    invite_accept_response:
+      type: object
+      properties:
+        workspace_id:
+          type: string
+        joined_at:
+          type: string
+          format: date-time
+      required:
+        - workspace_id
+        - joined_at
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        avatar_url:
+          type: string
+          nullable: true
+        notify_in_app:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - notify_in_app
+        - created_at
+        - updated_at
+    user_basic:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        avatar_url:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - email
+    workspace:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+    workspace_member:
+      type: object
+      properties:
+        id:
+          type: string
+        user:
+          $ref: "#/components/schemas/user_basic"
+        role:
+          type: string
+          enum:
+            - admin
+            - member
+        joined_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - user
+        - role
+        - joined_at
+    workspace_invite:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - created_at
+    create_workspace_request:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    create_workspace_response:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        default_project:
+          $ref: "#/components/schemas/project"
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+        - default_project
+    project:
+      type: object
+      properties:
+        id:
+          type: string
+        workspace_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        color:
+          type: string
+        is_archived:
+          type: boolean
+        archived_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - workspace_id
+        - name
+        - color
+        - is_archived
+        - created_by
+        - created_at
+        - updated_at
+    create_project_request:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        color:
+          type: string
+      required:
+        - name
+    section:
+      type: object
+      properties:
+        id:
+          type: string
+        project_id:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - project_id
+        - name
+        - order
+        - created_at
+        - updated_at
+    create_section_request:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    reorder_sections_request:
+      type: object
+      properties:
+        sections:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              order:
+                type: integer
+            required:
+              - id
+              - order
+      required:
+        - sections
+    task:
+      type: object
+      properties:
+        id:
+          type: string
+        project_id:
+          type: string
+        section_id:
+          type: string
+          nullable: true
+        parent_task_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+            - in_progress
+            - completed
+        priority:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        order:
+          type: integer
+        created_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        assignees:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - project_id
+        - title
+        - status
+        - priority
+        - order
+        - created_by
+        - created_at
+        - updated_at
+        - assignees
+    create_task_request:
+      type: object
+      properties:
+        project_id:
+          type: string
+        section_id:
+          type: string
+          nullable: true
+        parent_task_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        priority:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+          default: medium
+        assignees:
+          type: array
+          items:
+            type: string
+      required:
+        - project_id
+        - title
+    update_task_request:
+      type: object
+      properties:
+        section_id:
+          type: string
+          nullable: true
+        parent_task_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+            - in_progress
+            - completed
+        priority:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        order:
+          type: integer
+        assignees:
+          type: array
+          items:
+            type: string
+    comment:
+      type: object
+      properties:
+        id:
+          type: string
+        task_id:
+          type: string
+        author_id:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        author_name:
+          type: string
+        author_avatar_url:
+          type: string
+          nullable: true
+      required:
+        - id
+        - task_id
+        - author_id
+        - content
+        - created_at
+        - author_name
+    create_comment_request:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+    attachment:
+      type: object
+      properties:
+        id:
+          type: string
+        task_id:
+          type: string
+        file_name:
+          type: string
+        file_url:
+          type: string
+        file_size:
+          type: integer
+        uploaded_by:
+          type: string
+        uploaded_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - task_id
+        - file_name
+        - file_url
+        - file_size
+        - uploaded_by
+        - uploaded_at
+    notification:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        type:
+          type: string
+          enum:
+            - assignment
+            - comment
+            - subtask_assignment
+        task_id:
+          type: string
+        comment_id:
+          type: string
+          nullable: true
+        triggered_by:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - user_id
+        - type
+        - task_id
+        - triggered_by
+        - is_read
+        - created_at
+    update_notification_request:
+      type: object
+      properties:
+        is_read:
+          type: boolean
+      required:
+        - is_read
+    user_update_request:
+      type: object
+      properties:
+        name:
+          type: string
+        avatar_url:
+          type: string
+          nullable: true
+        notify_in_app:
+          type: boolean
+    password_change_request:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_password:
+          type: string
+          minLength: 8
+      required:
+        - current_password
+        - new_password
+    email_change_request:
+      type: object
+      properties:
+        new_email:
+          type: string
+          format: email
+      required:
+        - new_email
+    email_change_request_confirm:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+paths:
+  /api/auth/sign_up:
+    post:
+      summary: Register a new user and send email verification
+      operationId: sign_up
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sign_up_request"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/sign_up_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/auth/log_in:
+    post:
+      summary: Authenticate user and return JWT token
+      operationId: log_in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/log_in_request"
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/log_in_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/auth/forgot_password:
+    post:
+      summary: Request password reset email
+      operationId: forgot_password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/forgot_password_request"
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/forgot_password_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/auth/reset_password:
+    post:
+      summary: Reset user password using token
+      operationId: reset_password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/reset_password_request"
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reset_password_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/auth/verify_email:
+    post:
+      summary: Verify user email using token
+      operationId: verify_email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/verify_email_request"
+      responses:
+        "200":
+          description: Email verification successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/verify_email_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/auth/invite_accept:
+    post:
+      summary: Accept workspace invitation
+      operationId: invite_accept
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/invite_accept_request"
+      responses:
+        "200":
+          description: Invitation accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/invite_accept_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/workspaces:
+    get:
+      summary: List all workspaces for current user
+      operationId: list_workspaces
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of workspaces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/workspace"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create a new workspace
+      operationId: create_workspace
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_workspace_request"
+      responses:
+        "201":
+          description: Workspace created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/create_workspace_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/workspaces/{workspace_id}/members:
+    get:
+      summary: List members of a workspace
+      operationId: list_workspace_members
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+      responses:
+        "200":
+          description: List of workspace members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/workspace_member"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/workspaces/{workspace_id}/invites:
+    post:
+      summary: Invite members to a workspace
+      operationId: invite_members
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emails:
+                  type: array
+                  items:
+                    type: string
+                    format: email
+              required:
+                - emails
+      responses:
+        "201":
+          description: Invitations sent
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/workspace_invite"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/workspaces/{workspace_id}/invites/{invite_id}/resend:
+    post:
+      summary: Resend a pending workspace invitation
+      operationId: resend_workspace_invite
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+        - $ref: "#/components/parameters/invite_id"
+      responses:
+        "200":
+          description: Invitation resent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/forgot_password_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/workspaces/{workspace_id}/invites/{invite_id}:
+    delete:
+      summary: Revoke a workspace invitation
+      operationId: revoke_workspace_invite
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+        - $ref: "#/components/parameters/invite_id"
+      responses:
+        "204":
+          description: Invitation revoked
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/workspaces/{workspace_id}/members/{user_id}:
+    delete:
+      summary: Remove a member from a workspace
+      operationId: remove_workspace_member
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "204":
+          description: Member removed
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/workspaces/{workspace_id}/projects:
+    get:
+      summary: List projects in a workspace
+      operationId: list_projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+        - name: include_archived
+          in: query
+          schema:
+            type: boolean
+          description: Include archived projects
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create a new project in a workspace
+      operationId: create_project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/workspace_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_project_request"
+      responses:
+        "201":
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/projects/{project_id}:
+    patch:
+      summary: Update project details
+      operationId: update_project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_project_request"
+      responses:
+        "200":
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete a project if no tasks exist
+      operationId: delete_project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      responses:
+        "204":
+          description: Project deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/projects/{project_id}/archive:
+    post:
+      summary: Archive a project
+      operationId: archive_project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      responses:
+        "200":
+          description: Project archived
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/projects/{project_id}/unarchive:
+    post:
+      summary: Unarchive a project
+      operationId: unarchive_project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      responses:
+        "200":
+          description: Project unarchived
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/projects/{project_id}/sections:
+    get:
+      summary: List sections in a project
+      operationId: list_sections
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      responses:
+        "200":
+          description: List of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/section"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create a section in a project
+      operationId: create_section
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_section_request"
+      responses:
+        "201":
+          description: Section created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/section"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/sections/{section_id}:
+    patch:
+      summary: Rename a section
+      operationId: update_section
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/section_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_section_request"
+      responses:
+        "200":
+          description: Section updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/section"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete a section and unassign its tasks
+      operationId: delete_section
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/section_id"
+      responses:
+        "204":
+          description: Section deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/projects/{project_id}/sections/reorder:
+    post:
+      summary: Reorder sections in a project
+      operationId: reorder_sections
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/reorder_sections_request"
+      responses:
+        "200":
+          description: Sections reordered
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/section"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/projects/{project_id}/tasks:
+    get:
+      summary: List top-level tasks in a project with filters
+      operationId: list_tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/project_id"
+        - name: assignee
+          in: query
+          schema:
+            type: string
+          description: Filter by assignee user ID
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - in_progress
+              - completed
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum:
+              - low
+              - medium
+              - high
+        - name: due_date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: due_date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: sort_field
+          in: query
+          schema:
+            type: string
+            enum:
+              - due_date
+              - created_at
+              - title
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks:
+    post:
+      summary: Create a new task or subtask
+      operationId: create_task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_task_request"
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks/{task_id}:
+    get:
+      summary: Retrieve a task with details
+      operationId: get_task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      responses:
+        "200":
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update a task
+      operationId: update_task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_task_request"
+      responses:
+        "200":
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete a task and its related data
+      operationId: delete_task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      responses:
+        "204":
+          description: Task deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/tasks/{task_id}/assignments:
+    post:
+      summary: Assign a user to a task
+      operationId: assign_task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+              required:
+                - user_id
+      responses:
+        "201":
+          description: User assigned to task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks/{task_id}/assignments/{user_id}:
+    delete:
+      summary: Unassign a user from a task
+      operationId: unassign_task
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "204":
+          description: User unassigned from task
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/tasks/{task_id}/subtasks:
+    get:
+      summary: List subtasks of a task
+      operationId: list_subtasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      responses:
+        "200":
+          description: List of subtasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks/{task_id}/comments:
+    get:
+      summary: List comments on a task
+      operationId: list_comments
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      responses:
+        "200":
+          description: Comments of the task
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/comment"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Add a comment to a task
+      operationId: create_comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_comment_request"
+      responses:
+        "201":
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks/{task_id}/attachments:
+    get:
+      summary: List attachments of a task
+      operationId: list_attachments
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      responses:
+        "200":
+          description: Attachments of the task
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/attachment"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Upload an attachment to a task
+      operationId: create_attachment
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/task_id"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "201":
+          description: Attachment uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/attachment"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/attachments/{attachment_id}:
+    delete:
+      summary: Delete an attachment
+      operationId: delete_attachment
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/attachment_id"
+      responses:
+        "204":
+          description: Attachment deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/notifications:
+    get:
+      summary: List user notifications
+      operationId: list_notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: is_read
+          in: query
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/notification"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/notifications/{notification_id}:
+    patch:
+      summary: Mark a notification as read or unread
+      operationId: update_notification
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/notification_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_notification_request"
+      responses:
+        "200":
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/notification"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/notifications/mark_all_read:
+    post:
+      summary: Mark all notifications as read
+      operationId: mark_all_notifications_read
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: All notifications marked read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated_count:
+                    type: integer
+                required:
+                  - updated_count
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tasks/my:
+    get:
+      summary: List tasks assigned to current user
+      operationId: list_my_tasks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of user tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/notifications/inbox_count:
+    get:
+      summary: Get count of unread notifications
+      operationId: get_inbox_count
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Unread notifications count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unread_count:
+                    type: integer
+                required:
+                  - unread_count
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/search:
+    get:
+      summary: Global search for projects and tasks
+      operationId: search
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/project"
+                  tasks:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/task"
+                required:
+                  - projects
+                  - tasks
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/users/me:
+    get:
+      summary: Get current user profile and settings
+      operationId: get_current_user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      summary: Update current user profile and settings
+      operationId: update_current_user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user_update_request"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/users/me/password:
+    patch:
+      summary: Change current user password
+      operationId: change_password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/password_change_request"
+      responses:
+        "200":
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/forgot_password_response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/email_change_requests:
+    post:
+      summary: Initiate email change request
+      operationId: request_email_change
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/email_change_request"
+      responses:
+        "201":
+          description: Email change request created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                required:
+                  - request_id
+                  - expires_at
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/email_change_requests/confirm:
+    post:
+      summary: Confirm email change with token
+      operationId: confirm_email_change
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/email_change_request_confirm"
+      responses:
+        "200":
+          description: Email changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+security:
+  - bearerAuth: []

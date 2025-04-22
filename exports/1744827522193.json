@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827522193,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_ForgotPassword",
+      "version": "latest"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_ForgotPassword.tsx",
+      "type": "text",
+      "size": 3213,
+      "dependencies": false
+    }
+  ]
+}

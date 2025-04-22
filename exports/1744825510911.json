@@ -1,0 +1,15 @@
+{
+  "timestamp": 1744825510911,
+  "operation": {
+    "id": "db:postgres"
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/backend/db.sql",
+      "type": "text",
+      "size": 13472,
+      "dependencies": false
+    }
+  ]
+}

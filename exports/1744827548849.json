@@ -1,0 +1,19 @@
+{
+  "timestamp": 1744827548849,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_SignUp",
+      "version": "1744827328020"
+    }
+  },
+  "projectId": "projects-planner-like-asana-clone",
+  "files": [
+    {
+      "path": "../../apps/projects-planner-like-asana-clone/vitereact/src/components/views/UV_SignUp.tsx",
+      "type": "text",
+      "size": 10290,
+      "dependencies": false
+    }
+  ]
+}
